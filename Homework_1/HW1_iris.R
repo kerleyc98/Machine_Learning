@@ -72,8 +72,11 @@ for (j in 1:n){ #test rows
   pred <- which(sumall == max(sumall))
   if(which(sumall==max(sumall))==sumall[,4])
   {
+    #increment true(species)
     correctpred=correctpred+1
     print("correct prediction")
+  } else {
+    #increment false(species)
   }
   #sum tp/fp/tn/fn or whatever they are for this situation
 }
