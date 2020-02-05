@@ -1,13 +1,13 @@
 #read data
-irises <- data("iris")
+data("iris")
 n <- 50
 #clip class for distances
 #sample training set
-train_set = irises[sample(nrow(irises), size = 50),]
-train_set_noclass <- train_set[,-1] #figure out how to fix this b/c the class comes at the end of the row instead of the beginning
+train_set = iris[sample(nrow(iris), size = 50),]
+train_set_noclass <- train_set[,1:4]
 #sample test set
-test_set = irises[sample(nrow(irises), size = 50),]
-test_set_noclass <- test_set[, -1]
+test_set = iris[sample(nrow(iris), size = 50),]
+test_set_noclass <- test_set[, 1:4]
 #plotting the thing is impossible
 #distance method (euclidian)
 edistance <- function(x,y,n){
@@ -19,8 +19,17 @@ edistance <- function(x,y,n){
   d=sqrt(d)
   return(d)
 }
+true_setosa <- 0
+true_versicolor <- 0
+true_virginica <- 0
+false_setosa <- 0
+false_versicolor <- 0
+false_virginica <- 0
+correctpred=0
 #loop for each point in test set
 for (j in 1:n){ #test rows
+  #take test row species for later comparison
+  actual_species <- test_set$Species[j]
   #make array for distances
   distances = numeric()
   #calc distances and store in array
@@ -31,21 +40,22 @@ for (j in 1:n){ #test rows
     distances[m] <- edistance(x, y, nc)
   }
   #stitch distances to class
-  results = data.frame(distances, train_set$Species)
-  colnames(results) <- c("distance", "species")
+  results <- data.frame(cbind(distances, train_set$Species))
+  results <- as.data.frame(lapply(results, unlist))
+  colnames(results) <- c("distance", "train_species")
   #sort results
-  results <- results[order(distances),]
+  results <- results[order(results$distance),]
   #take top k entries
   kk <- 3 #3 nearest neighbors
-  cc <- results$species[1:kk]
+  cc <- results$train_species[1:kk]
   #tally classes
   sumSet=0
   sumVer=0
   sumVir=0
   for (k in 1:kk){
-    if(cc[k] == "setosa"){
+    if(cc[k] == 1){
       sumSet = sumSet+1
-    } else if(cc[k] == "versicolor"){
+    } else if(cc[k] == 2){
       sumVer = sumVer+1
     } else {
       sumVir = sumVir+1
@@ -53,8 +63,18 @@ for (j in 1:n){ #test rows
   }
   #declare classification
   #stitch together sums and use which.max
-  
-  #sum tp/fp/tn/fn
+  print(paste("Test: ", j))
+  # print(paste("Setosa: ", sumSet))
+  # print(paste("Versicolor: ", sumVer))
+  # print(paste("Virginica: ", sumVir))
+  sumall <- cbind(sumSet, sumVer, sumVir, actual_species)
+  print(sumall)
+  pred <- which(sumall == max(sumall))
+  if(pred==actual_species)
+  {
+    correctpred = correctpred+1
+  }
+  #sum tp/fp/tn/fn or whatever they are for this situation
 }
 #somehow find out how to form confusion matrix
 #donezo
