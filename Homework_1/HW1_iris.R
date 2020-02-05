@@ -70,9 +70,10 @@ for (j in 1:n){ #test rows
   sumall <- cbind(sumSet, sumVer, sumVir, actual_species)
   print(sumall)
   pred <- which(sumall == max(sumall))
-  if(pred==actual_species)
+  if(which(sumall==max(sumall))==sumall[,4])
   {
-    correctpred = correctpred+1
+    correctpred=correctpred+1
+    print("correct prediction")
   }
   #sum tp/fp/tn/fn or whatever they are for this situation
 }
