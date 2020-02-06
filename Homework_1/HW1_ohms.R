@@ -14,6 +14,9 @@ edistance <- function(x,y,n){
   d=sqrt(d)
   return(d)
 }
+
+differences <- numeric()
+
 #test set loop
 for(i in 1:nrow(test_set))
 {
@@ -46,11 +49,13 @@ for(i in 1:nrow(test_set))
   }
   #declare predicted value
   predResist <- sumWeight/sumWeightY
+  differences[i] <- abs(act_resistance-predResist)
   print(paste("Test: ", i))
   print(paste("Predicted resistance: ", predResist))
   print(paste("Actual resistance: ", act_resistance))
-  print(paste("Difference: ", abs(act_resistance-predResist)))
+  print(paste("Difference: ", differences[i]))
   print("")
   #get error/accuracy/whatever
 }
-#get stats
+#get rms
+print(paste("RMS: ", mean(differences^2)))
