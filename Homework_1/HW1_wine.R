@@ -23,8 +23,13 @@ for(i in 1:100)
       acc=acc+1
     }
   }
-  print(paste("Test: ", i))
-  print(paste("Error%: ", err/24))
-  print(paste("Accuracy: ", acc/24))
-  print("")
+  # print(paste("Test: ", i))
+  # print(paste("Error%: ", err/24))
+  # print(paste("Accuracy: ", acc/24))
+  # print("")
+  final_res[i,1] <- err/24
+  final_res[i,2] <- acc/24
 }
+colnames(final_res) <- c("Error", "Accuracy")
+print("As k increases, the error increases because the majority of neighbors ends up being the incorrect class.")
+print("Specifically, test entries that are near the decision border between two classes are liable to be classified incorrectly.")

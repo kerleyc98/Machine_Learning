@@ -50,11 +50,11 @@ for(i in 1:nrow(test_set))
   #declare predicted value
   predResist <- sumWeight/sumWeightY
   differences[i] <- abs(act_resistance-predResist)
-  print(paste("Test: ", i))
-  print(paste("Predicted resistance: ", predResist))
-  print(paste("Actual resistance: ", act_resistance))
-  print(paste("Difference: ", differences[i]))
-  print("")
+  # print(paste("Test: ", i))
+  # print(paste("Predicted resistance: ", predResist))
+  # print(paste("Actual resistance: ", act_resistance))
+  # print(paste("Difference: ", differences[i]))
+  # print("")
   #get error/accuracy/whatever
 }
 #get rms

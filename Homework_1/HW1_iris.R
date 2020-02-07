@@ -3,10 +3,10 @@ data("iris")
 n <- 50
 #clip class for distances
 #sample training set
-train_set = iris[sample(nrow(iris), size = 50),]
+train_set = iris[sample(nrow(iris)),]
 train_set_noclass <- train_set[,1:4]
 #sample test set
-test_set = iris[sample(nrow(iris), size = 50),]
+test_set = iris[sample(nrow(iris), size = n),]
 test_set_noclass <- test_set[, 1:4]
 #plotting the thing is impossible
 #distance method (euclidian)
@@ -22,7 +22,7 @@ edistance <- function(x,y,n){
 confusion_matrix <- matrix(0L, nrow = 3, ncol = 3)
 correctpred=0
 #loop for each point in test set
-for (j in 1:n){ #test rows
+for (j in 1:nrow(test_set)){ #test rows
   #take test row species for later comparison
   actual_species <- test_set$Species[j]
   #make array for distances
@@ -30,7 +30,7 @@ for (j in 1:n){ #test rows
   #calc distances and store in array
   nc = ncol(train_set_noclass)
   y <- test_set_noclass[j,]
-  for (m in 1:n){#train rows
+  for (m in 1:nrow(train_set)){#train rows
     x <- train_set_noclass[m,]
     distances[m] <- edistance(x, y, nc)
   }
@@ -63,20 +63,33 @@ for (j in 1:n){ #test rows
   # print(paste("Versicolor: ", sumVer))
   # print(paste("Virginica: ", sumVir))
   sumall <- cbind(sumSet, sumVer, sumVir, actual_species)
-  print(sumall)
-  pred <- which(sumall[,1:3] == sumall[,sumall[,4]])
-  if(pred==sumall[,4])
+  #handle ties
+  if(sumSet==sumVer && sumVer==sumVir)
+  {
+    #3-way tie
+    coin <- sample(1:3, 1)
+    sumall[,coin] = sumall[,coin]+1
+  }
+  # print(sumall)
+  pred <- which(sumall[,1:3] == max(sumall[,1:3]))
+  print(pred)
+  print(actual_species)
+  if(pred==sumall[1,4])
   {
     #increment true(species)
     correctpred=correctpred+1
     print("correct prediction")
   } else {
     #increment false(species)
+    print(paste("Test ", j, "failed"))
+    
   }
-  #sum tp/fp/tn/fn or whatever they are for this situation
+  print(sumall)
   confusion_matrix[sumall[1,4], pred] = confusion_matrix[sumall[1,4], pred]+1
 }
 #break down confusion matrix
+print("Confusion matrix:")
+print(confusion_matrix)
 #accuracy
 acc_all = correctpred/50
 print(paste("Overall accuracy: ", acc_all))
