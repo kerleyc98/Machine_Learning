@@ -19,12 +19,7 @@ edistance <- function(x,y,n){
   d=sqrt(d)
   return(d)
 }
-true_setosa <- 0
-true_versicolor <- 0
-true_virginica <- 0
-false_setosa <- 0
-false_versicolor <- 0
-false_virginica <- 0
+confusion_matrix <- matrix(0L, nrow = 3, ncol = 3)
 correctpred=0
 #loop for each point in test set
 for (j in 1:n){ #test rows
@@ -69,8 +64,8 @@ for (j in 1:n){ #test rows
   # print(paste("Virginica: ", sumVir))
   sumall <- cbind(sumSet, sumVer, sumVir, actual_species)
   print(sumall)
-  pred <- which(sumall == max(sumall))
-  if(which(sumall==max(sumall))==sumall[,4])
+  pred <- which(sumall[,1:3] == sumall[,sumall[,4]])
+  if(pred==sumall[,4])
   {
     #increment true(species)
     correctpred=correctpred+1
@@ -79,6 +74,19 @@ for (j in 1:n){ #test rows
     #increment false(species)
   }
   #sum tp/fp/tn/fn or whatever they are for this situation
+  confusion_matrix[sumall[1,4], pred] = confusion_matrix[sumall[1,4], pred]+1
 }
-#somehow find out how to form confusion matrix
+#break down confusion matrix
+#accuracy
+acc_all = correctpred/50
+print(paste("Overall accuracy: ", acc_all))
+#accuracy of each class
+acc_set = confusion_matrix[1,1]/sum(confusion_matrix[1,])
+acc_ver = confusion_matrix[2,2]/sum(confusion_matrix[2,])
+acc_vir = confusion_matrix[3,3]/sum(confusion_matrix[3,])
+print(paste("Setosa accuracy: ", acc_set))
+print(paste("Versicolor accuracy: ", acc_ver))
+print(paste("Virginicolor accuracy: ", acc_vir))
+#error
+print(paste("Overall error: ", 1-acc_all))
 #donezo
