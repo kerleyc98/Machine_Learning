@@ -12,7 +12,7 @@ dev.off()
 pred <- predict(cfit,data=iris,type="class")
 t <- table(iris$Species,pred)
 print(t)
-stop()
+#stop()
 d <- diag(t)
 n <- sum(t)
 overall_ac=d/n
