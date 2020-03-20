@@ -25,3 +25,8 @@ for(i in 1:nrow(rawdata))
 cov = cov*(1/nrow(rawdata))
 colnames(cov) <- c("x1", "x2", "x3")
 rownames(cov) <- c("x1", "x2", "x3")
+#Are any of the variables correlated? why or why not?
+#also print everything out
+print("covariance matrix: ")
+print(cov)
+print("None of the variables are independent, as none of the off-diagonal values in the matrix are 0")

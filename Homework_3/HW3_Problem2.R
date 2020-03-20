@@ -108,6 +108,10 @@ accVers = TVers/(TVers+FVers)
 accVirg = TVirg/(TVirg+FVirg)
 accSeto = TSeto/(TSeto+FSeto)
 accuracies = cbind(OA, accVers, accVirg, accSeto)
+print("output using petal length and width independently: ")
+print(allresults)
+print("accuracies using petal length and width independently: ")
+print(accuracies)
 #now do it with a multivariate gaussian function
 #whatever that means
 #these are for making the covariance matrices
@@ -195,7 +199,7 @@ for(i in 1:n4)
   }
 }
 #accuracies
-Mallresults <- data.frame(cl, testdata$Species, MpVers, MpVirg, MpSeto)
+Mallresults <- data.frame(mcl, testdata$Species, MpVers, MpVirg, MpSeto)
 colnames(Mallresults) <- c("predict", "actual", "prob_vers", "prob_virg", "prob_seto")
 n4 = nrow(Mallresults)
 MTVers = 0
@@ -234,3 +238,10 @@ MaccVers = MTVers/(MTVers+MFVers)
 MaccVirg = MTVirg/(MTVirg+MFVirg)
 MaccSeto = MTSeto/(MTSeto+MFSeto)
 Maccuracies = cbind(MOA, MaccVers, MaccVirg, MaccSeto)
+#printout
+print("Output for using multivariate gaussian function: ")
+print(Mallresults)
+print("Accuracies for multivariate gaussian function: ")
+print(Maccuracies)
+#Are the accuracies different? why or why not?
+print("The accuracies between the independent and multivariate gaussian functions differs a little bit with the multivariate slightly more accurate using the same test data.")
