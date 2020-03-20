@@ -1,0 +1,88 @@
+data("iris")
+library(mnormt)
+#make test set out of 30% of the data
+testdata = iris[sample(nrow(iris), size = 45),]
+#train data
+data1 = iris[which(iris[,5] == "versicolor"),]
+data2 = iris[which(iris[,5] == "virginica"),]
+data3 = iris[which(iris[,5] == "setosa"),]
+#some numbers
+n1 = nrow(data1)
+n2 = nrow(data2)
+n3 = nrow(data3)
+ntotal = n1+n2+n3
+#frequencies
+pc1 = n1/ntotal
+pc2 = n2/ntotal
+pc3 = n3/ntotal
+#means
+me11 = mean(data1$Petal.Length)
+me12 = mean(data1$Petal.Width)
+me21 = mean(data2$Petal.Length)
+me22 = mean(data2$Petal.Width)
+me31 = mean(data3$Petal.Length)
+me32 = mean(data3$Petal.Width)
+#i don't know what these are
+#they're mean vectors
+mu1 <- c(me11,me12)
+mu2 <- c(me21,me22)
+mu3 <- c(me31,me32)
+#dunno what these are either
+#covariance matrices
+#at least cov1 is, i dunno what co1 is for or what it does later
+co1 <- matrix(0.000,nrow=2,ncol=2)
+cov1 <- matrix(0.000,nrow=2,ncol=2)
+for (i in 1:nrow(data1)){
+  x <- data1$Petal.Length[i]
+  y <- data1$Petal.Width[i]
+  v <- c(x,y)
+  #this looks like what's in the barely-legible notes
+  d <- v-mu1
+  #what does this do
+  co1 <- d %o% d
+  #what is this for
+  cov1 <- cov1+co1
+}
+cov1 <- cov1*(1/nrow(data1))
+#do it again for class 2
+co2 <- matrix(0.000,nrow=2,ncol=2)
+cov2 <- matrix(0.000,nrow=2,ncol=2)
+for (i in 1:nrow(data2)){
+  x <- data2$Petal.Length[i]
+  y <- data2$Petal.Width[i]
+  v <- c(x,y)
+  d <- v-mu2
+  co2 <- d %o% d
+  cov2 <- cov2+co2
+}
+cov2 <- cov2*(1/nrow(data2))
+#do it again for class 3
+co3 <- matrix(0.000,nrow=2,ncol=2)
+cov3 <- matrix(0.000,nrow=2,ncol=2)
+for (i in 1:nrow(data3)){
+  x <- data3$Petal.Length[i]
+  y <- data3$Petal.Width[i]
+  v <- c(x,y)
+  d <- v-mu3
+  co3 <- d %o% d
+  cov3 <- cov3+co3
+}
+cov3 <- cov3*(1/nrow(data3))
+#naive bayes classification
+p1 <- numeric()
+p2 <- numeric()
+p3 <- numeric()
+cl <- integer()
+for (i in 1:nrow(testdata)){
+  x <- testdata$Petal.Length[i]
+  y <- testdata$Petal.Width[i]
+  f1=dmnorm(c(x,y),mu1,cov1)
+  f2=dmnorm(c(x,y),mu2,cov2)
+  f3=dmnorm(c(x,y),mu3,cov3)
+  p1[i]=pc1*(f1/(f1+f2+f3))
+  p2[i]=pc2*(f2/(f1+f2+f3))
+  p3[i]=pc3*(f3/(f1+f2+f3))
+  probboth <- cbind(p1[i],p2[i],p3[i])
+  nm <- which(probboth==max(probboth))
+  cl[i]=nm
+}
